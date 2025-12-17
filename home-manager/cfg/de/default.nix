@@ -1,4 +1,4 @@
-{...}: {
+{pkgs, ...}: {
   imports = [
     ./hyprpaper.nix
     ./hyprlock.nix
@@ -6,6 +6,13 @@
     ./waybar.nix
     ./mako.nix
     ./wofi.nix
+  ];
+
+  home.packages = with pkgs; [
+    grim
+    slurp
+    wl-clipboard
+    swappy
   ];
 
   wayland.windowManager.hyprland = {
@@ -124,6 +131,7 @@
         "$mainMod, V, togglefloating"
         "$mainMod, R, exec, $menu"
         "$mainMod, X, exec, hyprlock"
+        "$mainMod SHIFT, S, exec, grim -g \"$(slurp)\" ~/.cfg/screenshots/$(date +%F_%T).png"
 
         "$mainMod, h, movefocus, l"
         "$mainMod, l, movefocus, r"
