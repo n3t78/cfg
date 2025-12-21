@@ -55,6 +55,7 @@
   xdg.portal = {
     enable = true;
     xdgOpenUsePortal = true;
+    wlr.enable = true;
 
     extraPortals = [
       pkgs.xdg-desktop-portal-hyprland
@@ -62,12 +63,7 @@
     ];
   };
 
-  ### Strongly recommended for wlroots
   environment.sessionVariables = {
     STEAM_EXTRA_COMPAT_TOOLS_PATHS = "\${HOME}/.steam/root/compatibilitytools.d";
-    XDG_CURRENT_DESKTOP = "Hyprland";
-    XDG_SESSION_TYPE = "wayland";
-    SDL_VIDEODRIVER = "wayland";
-    QT_QPA_PLATFORM = "wayland";
   };
 }
