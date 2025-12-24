@@ -6,6 +6,7 @@
     ./git.nix
     ./zsh.nix
     ./firefox.nix
+    ./floorp.nix
     ./tmux.nix
     ./discord.nix
   ];

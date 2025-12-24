@@ -1,11 +1,19 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  lib,
+  ...
+}: {
   environment.systemPackages = with pkgs; [
     protonup-qt
     (pkgs.writeShellScriptBin "steam-dgpu" ''
       export DRI_PRIME=1
-      exec ${pkgs.steam}/bin/steam "$@"
+
+      # Prefer host libs over steam-runtime copies (fixes common fontconfig/libcef issues)
+      export STEAM_RUNTIME_PREFER_HOST_LIBRARIES=1
+
+      # Workaround for steamwebhelper/CEF crash loops on some setups
+      exec ${pkgs.steam}/bin/steam -cef-disable-gpu "$@"
     '')
-    mangohud
   ];
   hardware = {
     steam-hardware.enable = true;
@@ -24,23 +32,7 @@
     steam = {
       enable = true;
       remotePlay.openFirewall = false;
-      dedicatedServer.openFirewall = false;
-      #package = pkgs.steam.override {
-      #  extraPkgs = pkgs':
-      #    with pkgs'; [
-      #      xorg.libXcursor
-      #      xorg.libXi
-      #      xorg.libXinerama
-      #      xorg.libXScrnSaver
-      #      libpng
-      #      libpulseaudio
-      #      libvorbis
-      #      stdenv.cc.cc.lib # Provides libstdc++.so.6
-      #      libkrb5
-      #      keyutils
-      #      # Add other libraries as needed
-      #    ];
-      #};
+      dedicatedServer.openFirewall = true;
     };
     gamescope = {
       enable = true;
@@ -51,17 +43,6 @@
   #boot.plymouth.enable = true;
 
   services.upower.enable = true;
-
-  xdg.portal = {
-    enable = true;
-    xdgOpenUsePortal = true;
-    wlr.enable = true;
-
-    extraPortals = [
-      pkgs.xdg-desktop-portal-hyprland
-      pkgs.xdg-desktop-portal-gtk
-    ];
-  };
 
   environment.sessionVariables = {
     STEAM_EXTRA_COMPAT_TOOLS_PATHS = "\${HOME}/.steam/root/compatibilitytools.d";

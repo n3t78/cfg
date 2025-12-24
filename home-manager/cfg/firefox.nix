@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   programs.firefox = {
-    enable = true;
+    enable = false;
 
     profiles.n3to = {
       id = 0;

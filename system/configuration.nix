@@ -38,6 +38,14 @@
       common = {
         default = "*";
       };
+
+      "org.freedesktop.impl.portal.FileChooser" = {
+        default = ["gtk"];
+      };
+
+      "org.freedesktop.impl.portal.OpenURI" = {
+        default = ["gtk"];
+      };
     };
   };
 
@@ -81,6 +89,7 @@
     systemPackages = with pkgs; [
       wget
       neovim
+      qpdf
 
       # FORMATTER + LINT
       alejandra
