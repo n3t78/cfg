@@ -2,7 +2,28 @@
   pkgs,
   lib,
   ...
-}: {
+}: let
+  gruvySrc = pkgs.fetchFromGitHub {
+    owner = "RishabhRD";
+    repo = "gruvy";
+    rev = "master"; # Prefer pinning a commit later
+    hash = "sha256-4QHxSSzLB7wJOIYhpmr+Lykv2C1bDh95uSC866O55gk=";
+  };
+
+  gruvy = pkgs.vimUtils.buildVimPlugin {
+    pname = "gruvy";
+    version = "git";
+    src = gruvySrc;
+
+    dependencies = [pkgs.vimPlugins.lush-nvim];
+    postPatch = ''
+      # Fix invalid blend types: Lush/Neovim expects a number, not a string
+      substituteInPlace lua/lush_theme/gruvy.lua \
+        --replace 'blend="80"'  'blend=80' \
+        --replace 'blend="100"' 'blend=100'
+    '';
+  };
+in {
   programs.nvf = {
     enable = true;
 
@@ -21,46 +42,29 @@
         providers.wl-copy.enable = true;
       };
 
+      startPlugins = with pkgs; [
+        vimPlugins.lush-nvim
+        gruvy
+        "friendly-snippets"
+      ];
+
       ####################################################
       ### THEME
       ####################################################
       theme = {
-        enable = true;
-        name = "base16";
-        transparent = false;
-
-        base16-colors = {
-          # Core background ramp (darker + more muted)
-          base00 = "#141211";
-          base01 = "#1b1816";
-          base02 = "#24201e";
-          base03 = "#3a3532";
-
-          # Foreground ramp
-          base04 = "#9e9793";
-          base05 = "#d6d0cd";
-          base06 = "#e1dbd9";
-          base07 = "#f0ebe8";
-
-          # Semantic colors
-          base08 = "#d49191";
-          base09 = "#c4b392";
-          base0A = "#c8b692";
-          base0B = "#b6b696";
-          base0C = "#98acc8";
-          base0D = "#9e96b6";
-          base0E = "#b696b1";
-          base0F = "#e3d5ce";
-        };
-
-        extraConfig = ''
-          -- Defer highlight overrides until colorscheme + treesitter are applied
-          vim.defer_fn(function()
-            vim.api.nvim_set_hl(0, "Comment", { fg = "#E0D9E2", italic = true })
-            vim.api.nvim_set_hl(0, "@comment", { fg = "#E0D9E2", italic = true })
-          end, 0)
-        '';
+        enable = false;
       };
+
+      luaConfigRC.gruvyTheme = ''
+        vim.o.termguicolors = true
+        vim.cmd.colorscheme("gruvy")
+
+        -- Force black background
+        vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
+        vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#000000" })
+        vim.api.nvim_set_hl(0, "SignColumn", { bg = "#000000" })
+        vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "#000000" })
+      '';
 
       ####################################################
       ### TREESITTER (GLOBAL)
@@ -266,10 +270,6 @@
       ### SNIPPETS
       ####################################################
       snippets.luasnip.enable = true;
-
-      startPlugins = [
-        "friendly-snippets"
-      ];
 
       ####################################################
       ### COMPLETION — blink.cmp

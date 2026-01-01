@@ -5,7 +5,7 @@
     ./devenv.nix
     ./git.nix
     ./zsh.nix
-    ./firefox.nix
+    #./firefox.nix
     ./floorp.nix
     ./tmux.nix
     ./discord.nix

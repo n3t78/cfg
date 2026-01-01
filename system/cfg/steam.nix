@@ -14,15 +14,23 @@
       # Workaround for steamwebhelper/CEF crash loops on some setups
       exec ${pkgs.steam}/bin/steam -cef-disable-gpu "$@"
     '')
+
+    mesa-demos
   ];
   hardware = {
     steam-hardware.enable = true;
     graphics = {
+      enable = true;
       ## radv: an open-source Vulkan driver from freedesktop
       enable32Bit = true;
     };
 
     system76.enableAll = true;
+    amdgpu = {
+      opencl.enable = true;
+    };
+
+    firmware = [pkgs.linux-firmware];
   };
 
   services.xserver.videoDrivers = ["amdgpu"];

@@ -1,26 +1,22 @@
-{
-  pkgs,
-  lib,
-  ...
-}: {
+{pkgs, ...}: {
   programs.discord = {
     # disable for DiscoCSS
-    #enable = true;
+    enable = true;
     package = pkgs.discord;
 
     # Optional: usually recommended on NixOS
     settings = {
-      SKIP_HOST_UPDATE = true;
+      SKIP_HOST_UPDATE = false;
       # Only enable if you specifically want devtools inside Discord:
       # DANGEROUS_ENABLE_DEVTOOLS_ONLY_ENABLE_IF_YOU_KNOW_WHAT_YOURE_DOING = true;
     };
   };
 
   programs.discocss = {
-    enable = true;
+    enable = false;
 
     # If the HM module supports these, set them explicitly:
-    discordAlias = true;
+    discordAlias = false;
     discordPackage = pkgs.discord;
 
     # If your HM module exposes a settings JSON submodule, you can keep it empty:
@@ -97,22 +93,4 @@
       color: #E0D9E2 !important;
     }
   '';
-
-  # OPTIONAL: automatically run discocss after login.
-  # This is often the missing piece—discocss must be executed to inject.
-  systemd.user.services.discocss = {
-    Unit = {
-      Description = "DiscoCSS injector for Discord";
-      After = ["graphical-session.target"];
-    };
-
-    Service = {
-      Type = "oneshot";
-      ExecStart = "${pkgs.discocss}/bin/discocss";
-    };
-
-    Install = {
-      WantedBy = ["default.target"];
-    };
-  };
 }

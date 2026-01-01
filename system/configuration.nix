@@ -74,7 +74,7 @@
   users.users.n3to = {
     isNormalUser = true;
     description = "JohnCarterGonzalez";
-    extraGroups = ["networkmanager" "wheel" "tty" "sound" "audio" "docker"];
+    extraGroups = ["video" "render" "networkmanager" "wheel" "tty" "sound" "audio" "docker"];
   };
 
   fonts.packages = with pkgs; [
